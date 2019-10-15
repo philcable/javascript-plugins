@@ -177,11 +177,14 @@
 		// Merge user options with defaults.
 		settings = extendDefaults( defaults, options || {} );
 
-		// Listen for click events.
+		// Listen for click events on the navigation element.
 		settings.nav.addEventListener( 'click', toggleSection, false );
 
 		if ( 'vertical' === settings.orientation ) {
-			document.addEventListener( 'scroll', positionNav );
+			document.addEventListener( 'wheel', positionNav, {
+				capture: true,
+				passive: true
+			} );
 		}
 
 	};
