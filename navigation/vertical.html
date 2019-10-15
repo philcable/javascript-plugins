@@ -126,7 +126,13 @@
 				<li><a href="#">Link 2</a></li>
 			</ul>
 		</nav>
-
-		<script src="nav.js"></script>
+		<script src="../src/navigation.js"></script>
+		<script>
+			navigation.init({
+				main: document.getElementById( 'main' ),
+				nav: document.getElementById( 'nav' ),
+				orientation: 'vertical',
+			});
+		</script>
 	</body>
 </html>
