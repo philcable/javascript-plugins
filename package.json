@@ -1,0 +1,32 @@
+{
+	"name": "js-components",
+	"version": "0.0.1",
+	"description": "JavaScript components.",
+	"main": "",
+	"scripts": {
+		"start": "",
+		"build": "babel src -d dist",
+		"lint": "eslint src"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.6.4",
+		"@babel/core": "^7.6.4",
+		"@babel/preset-env": "^7.6.3",
+		"eslint": "^6.5.1"
+	},
+	"babel": {
+		"comments": false,
+		"minified": true,
+		"presets": [
+			"@babel/preset-env"
+		]
+	},
+	"eslintConfig": {
+		"extends": "eslint:recommended",
+		"env": {
+			"browser": true,
+			"es6": true,
+			"node": true
+		}
+	}
+}
