@@ -18,10 +18,12 @@
 
 	// Default settings.
 	const defaults = {
-		main: false,
-		nav: false,
+		breakpoint: null,
+		main: null,
+		nav: null,
 		orientation: 'vertical',
-		position: 0
+		position: 0,
+		minHeights: true,
 	};
 
 	// Object for keeping track of the `nav` element's scroll state.
@@ -35,9 +37,11 @@
 	 * @private
 	 */
 	const setMinHeight = function () {
-		const navHeight    = settings.nav.querySelector( 'ul' ).scrollHeight;
+		if ( !settings.minHeights ) return;
+
+		const navHeight = settings.nav.querySelector( 'ul' ).scrollHeight;
 		const windowHeight = window.innerHeight;
-		const minHeight    = ( navHeight > windowHeight )
+		const minHeight = ( navHeight > windowHeight )
 			? navHeight + 'px'
 			: windowHeight + 'px';
 
@@ -71,6 +75,7 @@
 		target.parentNode.classList.toggle( 'open' );
 
 		setMinHeight();
+
 		positionNav();
 	};
 
@@ -79,43 +84,31 @@
 	 * @private
 	 */
 	const positionNav = function () {
-		const windowTop  = window.scrollY;
+		const windowTop = window.scrollY;
 		const scrollDiff = navScrollState.top - windowTop;
-		const navHeight  = settings.nav.scrollHeight;
+		const upperBound = ( settings.nav.scrollHeight - window.innerHeight ) * -1;
 
 		let position = navScrollState.position;
 
+		// Within the upper bounds, calculate the position based on scroll location.
+		position = position + scrollDiff;
+
+		// If the position is greater than the default, reset it to the default.
+		// This prevents scrolling too far up.
+		if ( settings.position < position ) {
+			position = settings.position;
+		}
+
+		// If the position is outside of the upper bound, reset it to the upper bound.
+		// This prevents scrolling too far down.
+		if ( position < upperBound ) {
+			position = upperBound;
+		}
+
+		navScrollState.position = position;
 		navScrollState.top = windowTop;
 
-		// If the content in the main element is taller than the navgiation,
-		// maintain a top position on the navigation to ensure predictable scrolling.
-		if ( settings.main.offsetHeight > navHeight ) {
-			const upperBound = ( navHeight - window.innerHeight ) * -1;
-
-			// Wthin the upper bounds, calculate the position based on scroll location.
-			position = position + scrollDiff;
-
-			// If the position is greater than 0, reset it to 0.
-			// This prevents scrolling too far up.
-			if ( position > 0 ) {
-				position = 0;
-			}
-
-			// If the position is outside of the upper bound, reset it to the upper bound.
-			// This prevents scrolling too far down.
-			if ( position < upperBound ) {
-				position = upperBound;
-			}
-
-			// Set the top position on the navigation.
-			settings.nav.style.top = position + 'px';
-
-			// Update the navigation scroll state position
-			navScrollState.position = position;
-		} else {
-			// Set the top position on the navigation back to 0.
-			settings.nav.style.top = '0';
-		}
+		settings.nav.style.top = position + 'px';
 	};
 
 	/**
@@ -164,7 +157,13 @@
 	 * Initialize Plugin.
 	 *
 	 * @public
-	 * @param {Object} options User settings.
+	 * @param {Object}  options             User settings.
+	 * @param {Number}  options.breakpoint  Pixel width at which the navigation is styled for mobile devices. Defaults to `null`
+	 * @param {Object}  options.main        The element containing the page's content. Required. Defaults to `null`.
+	 * @param {Boolean} options.minHeights  Whether the plugin should set min heights on the main and nav elements. Defaults to `true`.
+	 * @param {Object}  options.nav         The element containing the navigation. Required. Defaults to `null`.
+	 * @param {String}  options.orientation The orientation of the navigation. Accepts `vertical` or `horizontal`. Defaults to `vertical`.
+	 * @param {Number}  options.position    Initial `top` value of the navigation element from CSS, if set. Defaults to `0`.
 	 */
 	navigation.init = function ( options ) {
 
@@ -181,12 +180,33 @@
 		settings.nav.addEventListener( 'click', toggleSection, false );
 
 		if ( 'vertical' === settings.orientation ) {
-			document.addEventListener( 'wheel', positionNav, {
-				capture: true,
-				passive: true
-			} );
-		}
+			document.addEventListener(
+				'wheel',
+				function () {
+					// Stop if the window is narrower than the set breakpoint.
+					if (
+						settings.breakpoint && settings.breakpoint > window.innerWidth
+						|| settings.main.offsetHeight < settings.nav.scrollHeight
+						|| window.innerHeight > ( settings.nav.scrollHeight + settings.position )
+						|| settings.position < settings.nav.getBoundingClientRect().top
+					) {
+						settings.nav.removeAttribute( 'style' );
+						return;
+					}
 
+					requestAnimationFrame( positionNav );
+				},
+				{
+					capture: true,
+					passive: true
+				}
+			);
+
+
+			setMinHeight();
+
+			window.addEventListener( 'resize', setMinHeight );
+		}
 	};
 
 	return navigation;

@@ -2,7 +2,9 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Vertical Navigation</title>
+		<title>Navigation (Vertical) - JavaScript Plugins</title>
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/common.css">
 		<link rel="stylesheet" href="vertical.css">
 	</head>
 	<body>
@@ -11,13 +13,71 @@
 		<a href="#nav" class="screen-reader-shortcut">Skip to navigation</a>
 
 		<main id="main">
-			<h1>Vertical Navigation</h1>
-			<p>Lorem</p>
+			<article>
+
+				<h1>Navigation (Vertical)</h1>
+
+				<p>Vertical navigation can be tricky. A number of factors could contribute to cases where your users may be forced to scroll to the bottom of a page in order to see the bottom of your navigation.</p>
+
+				<p>This plugin attempts to fix that issue</p>
+
+				<p>Open some of the sections on the left and scroll around to see it in action!</p>
+
+				<h2>Usage</h2>
+
+				<p>Include the script on your page with <code>&lt;script src="navigation.js"&gt;&lt;/script&gt;</code>. (If you put it in the <code>head</code>, add the <code>defer</code> attribute.)</p>
+
+				<p>Initialize the plugin with <code>&lt;script&gt;navigation.init();&lt;/script&gt;</code>.</p>
+
+				<h3>Settings</h3>
+
+				<p>The plugin accepts a number of settings. They can be passed in like so:</p>
+
+				<code class="language-javascript" data-lang="javascript">
+					<pre>
+navigation.init( {
+	breakpoint: 960,
+	main: document.getElementById( 'main' ),
+	minHeights: true,
+	nav: document.getElementById( 'nav' ),
+	orientation: 'vertical',
+	position: 120
+} );
+					</pre>
+				</code>
+
+				<ul>
+					<li><code>breakpoint</code>: Pixel width at which the navigation is styled for mobile devices. Defaults to `null`.</li>
+					<li><code>main</code>: <strong>Required.</strong> The element containing the page's content. Defaults to `null`.</li>
+					<li><code>minHeights</code>: Whether the plugin should set minimum heights on the main and nav elements. Defaults to `true`.</li>
+					<li><code>nav</code>: <strong>Required.</strong> The element containing the navigation. Defaults to `null`.</li>
+					<li><code>orientation</code>: The orientation of the navigation. Accepts `vertical` or `horizontal`. Defaults to `vertical`.</li>
+					<li><code>position</code>: Initial `top` value of the navigation element from CSS, if set. Defaults to `0`.</li>
+				</ul>
+
+				<section>
+					<p>Placeholder content</p>
+				</section>
+
+				<section>
+					<p>Placeholder content</p>
+				</section>
+
+				<section>
+					<p>Placeholder content</p>
+				</section>
+
+				<section>
+					<p>Placeholder content</p>
+				</section>
+
+			</article>
+
 		</main>
 
 		<nav id="nav">
 			<ul>
-				<li><a href="https://philcable.github.io/javascript-components/">JS Components Home</a></li>
+				<li><a href="https://philcable.github.io/javascript-plugins/">JS Plugins Home</a></li>
 				<li>
 					<a href="#">Section 1</a>
 					<ul>
@@ -128,11 +188,11 @@
 		</nav>
 		<script src="../dist/navigation.js"></script>
 		<script>
-			navigation.init({
+			navigation.init( {
 				main: document.getElementById( 'main' ),
 				nav: document.getElementById( 'nav' ),
-				orientation: 'vertical',
-			});
+				orientation: 'vertical'
+			} );
 		</script>
 	</body>
 </html>
